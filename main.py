@@ -279,8 +279,9 @@ async def roll(ctx, num, *, ids):
 
 @client.command()
 async def database(ctx):
-	file = discord.File("pythonsqlite.db")
-	await ctx.send(file=file, content="Database:")
-	sys.exit(1)
+	if ctx.author.id == 666464937052209152 or ctx.author.id == 435502783790055445:
+		file = discord.File("pythonsqlite.db")
+		await ctx.send(file=file, content="Database:")
+		sys.exit(1)
 
 client.run('ODA0MDY5NTgwODk2ODYyMjA4.YBG-Jg.slKsWNS7pT4r9ucflnyTYhp5YYU')
