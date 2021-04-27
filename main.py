@@ -283,4 +283,4 @@ async def database(ctx):
 	await ctx.send(file=file, content="Database:")
 	sys.exit(1)
 
-client.run('ODM2NjAyNjg2MTk5MzAwMTA1.YIgY9w.wZVr5tmT6IIu0vO0ZqiKpdaw3z4')
+client.run('ODA0MDY5NTgwODk2ODYyMjA4.YBG-Jg.slKsWNS7pT4r9ucflnyTYhp5YYU')
