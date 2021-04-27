@@ -6,6 +6,7 @@ import random
 import time  
 import platform
 import os
+import sys
 from PIL import Image, ImageDraw
  
 person = ['Obama', 'Donald Trump', 'Miley Cyrus', 'Lil Nas X', 'Lady Gaga', 'Doughnut Cop', 'Bernie Sanders', 'Drake', 'Steve Jobs']
@@ -275,6 +276,11 @@ async def roll(ctx, num, *, ids):
 			new_ids.remove(user_id)
 			await user.send("You have been selected")
 		await ctx.send("People Selected, They have been dmed by me.")
-			
-    
-client.run('ODA0MDY5NTgwODk2ODYyMjA4.YBG-Jg.htmy0fm8R-qJT0IIpRtkKgqM4C4')
+
+@client.command()
+async def database(ctx):
+	file = discord.File("pythonsqlite.db")
+	await ctx.send(file=file, content="Database:")
+	sys.exit(1)
+
+client.run('ODM2NjAyNjg2MTk5MzAwMTA1.YIgY9w.wZVr5tmT6IIu0vO0ZqiKpdaw3z4')
