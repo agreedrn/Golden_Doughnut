@@ -8,17 +8,28 @@ import platform
 import os
 import sys
 from PIL import Image, ImageDraw
+
+from dotenv import load_dotenv
+load_dotenv()
  
 person = ['Obama', 'Donald Trump', 'Miley Cyrus', 'Lil Nas X', 'Lady Gaga', 'Doughnut Cop', 'Bernie Sanders', 'Drake', 'Steve Jobs']
 personbold = ['**Obama**', '**Donald Trump**', '**Miley Cyrus**', '**Lil Nas X**', '**Lady Gaga**', '**Doughnut Cop**', '**Bernie Sanders**', '**Drake**', '**Steve Jobs**']
 begfail = ['Ew, No, You smell weird', 'I only use a credit card', 'Imagine being broke', 'Ask Harmandeep for money']
 buy_items = ['creditcard']
 cool = []
+ownerID = int(os.getenv('OWNER_ID'))
 
 conn = sqlite3.connect('pythonsqlite.db')
 c = conn.cursor()
-client = commands.Bot(command_prefix = ';')
 
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
+intents.presences = True
+intents.emojis_and_stickers = True
+intents.dm_messages = True
+
+client = commands.Bot(command_prefix = ';', intents=intents)
 @client.event
 async def on_ready():
 	print(f"Logged in as {client.user.name}")
@@ -50,7 +61,7 @@ async def ping(ctx):
 #setbalance command
 @client.command()
 async def setbalance(ctx, message, member: discord.Member=None):
-	if ctx.author.id == 666464937052209152 or ctx.author.id == 435502783790055445:
+	if ctx.author.id == ownerID:
 		if member is None:
 			member = ctx.author
 		c.execute(f"SELECT money FROM balance WHERE user_id = '{member.id}'")
@@ -82,7 +93,7 @@ async def balance(ctx, member: discord.Member=None):
 		value = result[0][0]
 	balanceEmbed=discord.Embed(title=f"{member.name}'s Balance", color=0x42b3f5)
 	balanceEmbed.add_field(name="Wallet", value=value, inline=False)
-	balanceEmbed.set_thumbnail(url=member.avatar_url)
+	balanceEmbed.set_thumbnail(url=member.avatar)
 	await ctx.send(embed=balanceEmbed) 
     
 
@@ -173,7 +184,7 @@ async def beg(ctx):
 @beg.error
 async def beg_error(ctx,error):
     if isinstance(error, commands.CommandOnCooldown):
-        if ctx.author.id == 666464937052209152 or ctx.author.id == 435502783790055445:
+        if ctx.author.id == ownerID:
             successvalue = random.randint(1,5)
             additionvalue = random.randint(1,10)
             additionvaluestr = str(additionvalue)
@@ -218,11 +229,11 @@ async def inv(ctx, member: discord.Member=None):
 async def additem(ctx, item_string, member: discord.Member=None):
 	if member is None:
 		member = ctx.author
-	if ctx.author.id == 666464937052209152 or ctx.author.id == 435502783790055445: 
+	if ctx.author.id == ownerID:
 		await addItem(member.id, item_string)
 		await ctx.send(f"Success | {ctx.author.name} to {member.name}")
 	else:
-		ctx.send(embed=commmandlockedem)
+		ctx.send(embed=discord.Embed(title="Command Locked", color=0xFF7254))
 
 @client.command()
 async def buy(ctx,item2):
@@ -264,8 +275,9 @@ async def img(ctx,text):
     d = ImageDraw.Draw(img)
     d.text((10,10), text, fill=(255,255,0))
  
-    img.save('pil_text.png')
-    await ctx.send("Image:", file=discord.File('pil_text.png'))
+    img.save(f'./pil_text{ctx.author.id}.png')
+    await ctx.send("Image:", file=discord.File(f'./pil_text{ctx.author.id}.png'))
+    os.remove(f'./pil_text{ctx.author.id}.png')
 
 @client.command()
 async def roll(ctx, num, *, ids):
@@ -279,9 +291,9 @@ async def roll(ctx, num, *, ids):
 
 @client.command()
 async def database(ctx):
-	if ctx.author.id == 666464937052209152 or ctx.author.id == 435502783790055445:
+	if ctx.author.id == ownerID:
 		file = discord.File("pythonsqlite.db")
 		await ctx.send(file=file, content="Database:")
 		sys.exit(1)
 
-client.run('ODA0MDY5NTgwODk2ODYyMjA4.YBG-Jg.slKsWNS7pT4r9ucflnyTYhp5YYU')
+client.run(os.getenv('BOT_TOKEN'))
